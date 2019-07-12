@@ -1,24 +1,21 @@
 <template>
-  <div class="bgc">
+  <div class="login-container">
     <el-card class="login-box">
       <img src="../../assets/images/logo_index.png" alt />
       <!-- 账号:<el-input placeholder="请输入内容" v-model="input" clearable></el-input> -->
-      <el-form
-        :model="ruleForm"
-        status-icon
-        :rules="rules"
-        ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="账号" prop="pass">
-          <el-input type="text" v-model="ruleForm.pass" autocomplete="off"></el-input>
+      <el-form ref="loginForm" :model="loginForm" :status-icon="true" :rules="loginRules" class="demo-ruleForm">
+        <el-form-item prop="mobile">
+          <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="checkPass">
-          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+        <el-form-item prop="code">
+          <el-input v-model="loginForm.code" placeholder="请输入验证码" style= "width:230px" ></el-input>
+          <el-button style="float:right">获取验证码</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')" class="ccc">登录</el-button>
+          <el-checkbox :value="true">我已阅读并同意用户协议和隐私条款</el-checkbox>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="login()" style="width:100%">登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -28,35 +25,47 @@
 <script>
 export default {
   data () {
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入账号'))
+    const checkMobile = (rule, value, callback) => {
+      if (/^1[3-9]\d{9}$/.test(value)) {
+        callback()
+      } else {
+        callback(new Error('格式不正确'))
       }
     }
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
-      }
-    }
+
     return {
-      ruleForm: {
-        pass: '',
-        checkPass: ''
+      loginForm: {
+        mobile: '',
+        code: ''
       },
-      rules: {
-        pass: [{ validator: validatePass, trigger: 'blur' }],
-        checkPass: [{ validator: validatePass2, trigger: 'blur' }]
+      loginRules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { len: 6, message: '请输入6位数字', trigger: 'blur' }
+        ]
       }
     }
   },
   methods: {
-    submitForm (formName) {
-      this.$refs[formName].validate(valid => {
+    login () {
+      this.$refs.loginForm.validate(valid => {
         if (valid) {
-          alert('submit!')
-        } else {
-          console.log('error submit!!')
-          return false
+          this.$http
+            .post(
+              'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+              this.loginForm
+            )
+            .then(res => {
+              this.$router.push('/')
+            })
+            .catch(() => {
+              this.$message.error('手机号或验证码错误')
+            })
+          // this.router.push('/')
         }
       })
     }
@@ -65,7 +74,7 @@ export default {
 </script>
 
 <style>
-.bgc {
+.login-container {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -74,8 +83,9 @@ export default {
   background: url(../../assets/images/login_bg.jpg) no-repeat center / cover;
 }
 .login-box {
-  width: 400px;
-  height: 300px;
+  width: 500px;
+  height: 400px;
+  padding: 0px 50px;
   position: absolute;
   background: url(../../assets/images/hh.jpeg) no-repeat center / cover;
   left: 50%;
@@ -87,13 +97,9 @@ img {
   width: 200px;
   margin: 10px auto;
 }
-.ccc {
-  width: 100px;
-}
 .demo-ruleForm {
   margin-top: 20px;
-  text-align: center;
-  padding-right: 40px;
+  /* text-align: center; */
   opacity: .6;
 }
 .el-form-item__label {
