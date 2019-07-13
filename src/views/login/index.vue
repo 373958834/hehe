@@ -15,7 +15,7 @@
           <el-checkbox :value="true">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="login()" style="width:100%">登录</el-button>
+          <el-button type="primary" @click="login()" @keyup.enter.native="login()" style="width:100%">登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -35,8 +35,8 @@ export default {
 
     return {
       loginForm: {
-        mobile: '',
-        code: ''
+        mobile: '17310625607',
+        code: '246810'
       },
       loginRules: {
         mobile: [
@@ -50,16 +50,39 @@ export default {
       }
     }
   },
+  created () {
+    var _self = this
+
+    document.onkeydown = function (e) {
+      var key = window.event.keyCode
+
+      if (key === 13) {
+        _self.login()
+      }
+    }
+  },
+  beforeDestroy () {
+    document.onkeydown = function (e) {
+      var key = window.event.keyCode
+
+      if (key === 13) {
+
+      }
+    }
+  },
+
   methods: {
+
     login () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.$http
             .post(
-              'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+              'authorizations',
               this.loginForm
             )
             .then(res => {
+              window.sessionStorage.setItem('hehe', JSON.stringify(res.data.data))
               this.$router.push('/')
             })
             .catch(() => {
