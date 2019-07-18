@@ -74,21 +74,28 @@ export default {
   methods: {
 
     login () {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
-          this.$http
-            .post(
-              'authorizations',
-              this.loginForm
-            )
-            .then(res => {
-              window.sessionStorage.setItem('hehe', JSON.stringify(res.data.data))
-              this.$router.push('/')
-            })
-            .catch(() => {
-              this.$message.error('手机号或验证码错误')
-            })
+          // this.$http
+          //   .post(
+          //     'authorizations',
+          //     this.loginForm
+          //   )
+          //   .then(res => {
+          //     window.sessionStorage.setItem('hehe', JSON.stringify(res.data.data))
+          //     this.$router.push('/')
+          //   })
+          //   .catch(() => {
+          //     this.$message.error('手机号或验证码错误')
+          //   })
           // this.router.push('/')
+          try {
+            const res = await this.$http.post('authorizations', this.loginForm)
+            window.sessionStorage.setItem('hehe', JSON.stringify(res.data.data))
+            this.$router.push('/')
+          } catch (err) {
+            this.$message.error('手机号或验证码错误')
+          }
         }
       })
     }

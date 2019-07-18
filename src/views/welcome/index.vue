@@ -38,17 +38,16 @@ export default {
 }
 
 .el-carousel__item:nth-child(1n) {
-  background: url(../../assets/images/3b.jpg) no-repeat center / cover;
+  background: url(../../assets/images/4a.jpg) no-repeat center / cover;
 }
-
 .el-carousel__item:nth-child(2n) {
-  background: url(../../assets/images/2a.jpg) no-repeat center / cover;
+  background: url(../../assets/images/1.jpg) no-repeat center / cover;
 }
 .el-carousel__item:nth-child(3n) {
-  background: url(../../assets/images/2.jpg) no-repeat center / cover;
+  background: url(../../assets/images/4.jpg) no-repeat center / cover;
 }
 .el-carousel__item:nth-child(4n) {
-  background: url(../../assets/images/2b.jpg) no-repeat center / cover;
+  background: url(../../assets/images/1a.jpg) no-repeat center / cover;
 }
 .el-carousel__item:nth-child(5n) {
   background: url(../../assets/images/3.jpg) no-repeat center / cover;
